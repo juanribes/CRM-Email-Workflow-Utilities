@@ -89,15 +89,25 @@
     <Compile Include="CheckAttachmentsTests.cs" />
     <Compile Include="DeleteAttachmentByNameTests.cs" />
     <Compile Include="EmailBusinessUnitTests.cs" />
+    <Compile Include="EmailQueueMembersTests.cs" />
     <Compile Include="EmailSecurityRoleTests.cs" />
     <Compile Include="MoqExtensions.cs" />
     <Compile Include="DeleteAttachmentTests.cs" />
     <Compile Include="EmailTeamTests.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="SendEmailTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LAT.WorkflowUtilities.Email\LAT.WorkflowUtilities.Email.csproj">
