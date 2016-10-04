@@ -125,7 +125,7 @@ namespace LAT.WorkflowUtilities.Email
 			//Check if 2011
 			RetrieveVersionRequest request = new RetrieveVersionRequest();
 			OrganizationResponse response = service.Execute(request);
-			
+
 			return response.Results["Version"].ToString().StartsWith("5");
 		}
 
@@ -149,28 +149,28 @@ namespace LAT.WorkflowUtilities.Email
 			//Query for the business unit members
 			QueryExpression query = new QueryExpression
 			{
-				EntityName = "queue",
+				EntityName = "systemuser",
 				ColumnSet = new ColumnSet(false),
 				LinkEntities =
 				{
 					new LinkEntity
 					{
-						LinkFromEntityName = "queue",
-						LinkFromAttributeName = "queueid",
+						LinkFromEntityName = "systemuser",
+						LinkFromAttributeName = "systemuserid",
 						LinkToEntityName = "queuemembership",
-						LinkToAttributeName = "queueid",
-						Columns = new ColumnSet("systemuserid")
-					}
-				},
-				Criteria = new FilterExpression
-				{
-					Conditions =
-					{
-						new ConditionExpression
+						LinkToAttributeName = "systemuserid",
+						Columns = new ColumnSet("systemuserid"),
+						LinkCriteria = new FilterExpression
 						{
-							AttributeName = "queueid",
-							Operator = ConditionOperator.Equal,
-							Values = { queueId }
+							Conditions =
+							{
+								new ConditionExpression
+								{
+									AttributeName = "queueid",
+									Operator = ConditionOperator.Equal,
+									Values = { queueId }
+								}
+							}
 						}
 					}
 				}
