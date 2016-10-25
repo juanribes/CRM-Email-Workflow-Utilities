@@ -986,7 +986,7 @@ namespace LAT.WorkflowUtilities.Email.Tests
                 { "EmailWithAttachments", new EntityReference("email", Guid.NewGuid()) },
                 { "DeleteSizeMax", 75000},
                 { "DeleteSizeMin", 3000 },
-                { "Extensions" , "pdf" },
+                { "Extensions", "pdf" },
                 { "AppendNotice", false }
             };
 
@@ -1000,12 +1000,12 @@ namespace LAT.WorkflowUtilities.Email.Tests
             Assert.AreEqual(expected, output["NumberOfAttachmentsDeleted"]);
         }
 
-        /// <summary>
-        /// Modify to mock CRM Organization Service actions
-        /// </summary>
-        /// <param name="serviceMock">The Organization Service to mock</param>
-        /// <returns>Configured Organization Service</returns>
-        private static Mock<IOrganizationService> DeleteZeroMixedExtensionSetup(Mock<IOrganizationService> serviceMock)
+		/// <summary>
+		/// Modify to mock CRM Organization Service actions
+		/// </summary>
+		/// <param name="serviceMock">The Organization Service to mock</param>
+		/// <returns>Configured Organization Service</returns>
+		private static Mock<IOrganizationService> DeleteZeroMixedExtensionSetup(Mock<IOrganizationService> serviceMock)
         {
             //Attachment List
             Entity attachment1 = new Entity("activitymimeattachment");
@@ -1094,15 +1094,75 @@ namespace LAT.WorkflowUtilities.Email.Tests
             return serviceMock;
         }
 
-        /// <summary>
-        /// Invokes the workflow.
-        /// </summary>
-        /// <param name="name">Namespace.Class, Assembly</param>
-        /// <param name="target">The target entity</param>
-        /// <param name="inputs">The workflow input parameters</param>
-        /// <param name="configuredServiceMock">The function to configure the Organization Service</param>
-        /// <returns>The workflow output parameters</returns>
-        private static IDictionary<string, object> InvokeWorkflow(string name, ref Entity target, Dictionary<string, object> inputs,
+		[TestMethod]
+		public void DeleteZeroZero()
+		{
+			//Target
+			Entity targetEntity = null;
+
+			//Input parameters
+			var inputs = new Dictionary<string, object>
+			{
+				{ "EmailWithAttachments", new EntityReference("email", Guid.NewGuid()) },
+				{ "DeleteSizeMax", 0},
+				{ "DeleteSizeMin", 0 },
+				{ "Extensions", null },
+				{ "AppendNotice", false }
+			};
+
+			//Expected value
+			const int expected = 0;
+
+			//Invoke the workflow
+			var output = InvokeWorkflow(_namespaceClassAssembly, ref targetEntity, inputs, DeleteZeroZeroSetup);
+
+			//Test
+			Assert.AreEqual(expected, output["NumberOfAttachmentsDeleted"]);
+		}
+
+		/// <summary>
+		/// Modify to mock CRM Organization Service actions
+		/// </summary>
+		/// <param name="serviceMock">The Organization Service to mock</param>
+		/// <returns>Configured Organization Service</returns>
+		private static Mock<IOrganizationService> DeleteZeroZeroSetup(Mock<IOrganizationService> serviceMock)
+		{
+			//Attachment List
+			Entity attachment1 = new Entity("activitymimeattachment");
+			attachment1["filesize"] = 100000;
+			attachment1["filename"] = "text1.pdf";
+
+			Entity attachment2 = new Entity("activitymimeattachment");
+			attachment2["filesize"] = 100000;
+			attachment2["filename"] = "text2.docx";
+
+			EntityCollection attachments = new EntityCollection();
+			attachments.Entities.Add(attachment1);
+			attachments.Entities.Add(attachment2);
+
+			serviceMock.Setup(t =>
+				t.RetrieveMultiple(It.IsAny<QueryExpression>()))
+				.ReturnsInOrder(attachments);
+
+			//New Note
+			Guid newNoteId = new Guid();
+
+			serviceMock.Setup(t =>
+				t.Create(It.IsAny<Entity>()))
+				.ReturnsInOrder(newNoteId);
+
+			return serviceMock;
+		}
+
+		/// <summary>
+		/// Invokes the workflow.
+		/// </summary>
+		/// <param name="name">Namespace.Class, Assembly</param>
+		/// <param name="target">The target entity</param>
+		/// <param name="inputs">The workflow input parameters</param>
+		/// <param name="configuredServiceMock">The function to configure the Organization Service</param>
+		/// <returns>The workflow output parameters</returns>
+		private static IDictionary<string, object> InvokeWorkflow(string name, ref Entity target, Dictionary<string, object> inputs,
             Func<Mock<IOrganizationService>, Mock<IOrganizationService>> configuredServiceMock)
         {
             var testClass = Activator.CreateInstance(Type.GetType(name)) as CodeActivity; ;

@@ -15,10 +15,10 @@ namespace LAT.WorkflowUtilities.Email
         [ReferenceTarget("email")]
         public InArgument<EntityReference> EmailWithAttachments { get; set; }
 
-        [Input("Delete <= Than X Bytes (Empty = 0)")]
+        [Input("Delete >= Than X Bytes (Empty = 2,147,483,647)")]
         public InArgument<int> DeleteSizeMax { get; set; }
 
-        [Input("Delete >= Than X Bytes (Empty = 2,147,483,647)")]
+        [Input("Delete <= Than X Bytes (Empty = 0)")]
         public InArgument<int> DeleteSizeMin { get; set; }
 
         [Input("Limit To Extensions (Comma Delimited, Empty = Ignore)")]
